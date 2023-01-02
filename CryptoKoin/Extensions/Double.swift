@@ -12,7 +12,7 @@ extension Double {
     private var currencyFormatter : NumberFormatter {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = true
-        formatter.locale = Locale.current
+        formatter.locale = Locale(id_Id)
         formatter.numberStyle = .currency
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = 2
