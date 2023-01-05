@@ -16,8 +16,6 @@ class HomeViewModel : ObservableObject {
     @Published var coins = [Coin]()
     @Published var topMovingCoins = [Coin]()
     
-    //when initializing the ViewModel, the function will called (@StateObj, @ObservedObj)
-    //so we doesnt need to use onAppear
     init() {
         fetchCoinData()
     }
@@ -27,14 +25,14 @@ class HomeViewModel : ObservableObject {
         
         URLSession.shared.dataTask(with: url) { data, response, error in
             if let error = error {
-                print("DEBUG: Error \(error.localizedDescription)")
-                // return to stop function when error
                 return
             }
             
-            if let response = response as? HTTPURLResponse {
-                print("DEBUG: response with code \(response.statusCode)")
-            }
+            guard let response = response as? HTTPURLResponse,
+                    (200...300) ~= response.statusCode else {
+                let statusCode = (response as! HTTPURLResponse).statusCode
+                return
+            }                
             
             guard let data = data else { return }
             
@@ -44,9 +42,8 @@ class HomeViewModel : ObservableObject {
                     self.coins = coins
                     self.configureTopMovingCoins()
                 }
-                print("DEBUG: Coins \(coins)")
             }catch {
-                print("DEBUG: Failed to decode with error \(error)")
+                print("DEBUG: Failed to decode \(error)")
             }
             
         }.resume()
